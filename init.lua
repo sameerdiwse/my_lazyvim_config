@@ -33,6 +33,18 @@ require("lazy").setup({
     },
   },
   {
+  "nvimtools/none-ls.nvim",
+  dependencies = { "nvim-lua/plenary.nvim" },
+  config = function()
+    local null_ls = require("null-ls")
+    null_ls.setup({
+      sources = {
+        null_ls.builtins.formatting.prettierd,
+      },
+    })
+  end,
+  },
+  {
     { "catppuccin/nvim", name = "catppuccin", priority = 1000 }
   },
   {
@@ -70,4 +82,10 @@ require("nvim-treesitter.configs").setup({
 
 require("catppuccin").setup()
 vim.cmd.colorscheme "catppuccin"
+vim.api.nvim_create_autocmd("BufWritePre", {
+  callback = function()
+    vim.lsp.buf.format({ async = false })
+  end,
+})
+
 
