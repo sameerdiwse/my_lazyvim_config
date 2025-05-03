@@ -31,7 +31,9 @@ function M.setup()
 
   vim.keymap.set('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })  -- Close current window
 
-  vim.keymap.set('n', '<leader>f', 'f', { noremap = true })
+  vim.keymap.set('n', '<leader>ss', ':w<CR>', { noremap = true, silent = true })  -- Close current window
+
+  --vim.keymap.set('n', '<leader>f', 'f', { noremap = true })
 
 
 end
