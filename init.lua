@@ -45,6 +45,16 @@ require("lazy").setup({
   end,
   },
   {
+    'nvim-java/nvim-java',
+    dependencies = 
+  {
+    'nvim-java/lua-async-await',
+    'nvim-java/nvim-java-core',
+    'nvim-java/nvim-java-test',
+    'nvim-java/nvim-java-dap',
+  },
+  },
+  {
     { "catppuccin/nvim", name = "catppuccin", priority = 1000 }
   },
   {
@@ -60,15 +70,15 @@ require("lazy").setup({
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = {"lua_ls", "ts_ls"}
+        ensure_installed = {"lua_ls", "ts_ls", "jdtls"}
       }) -- Initialize mason.nvim
     end
   },
   {
     "neovim/nvim-lspconfig",
     config = function()
-      require("lspconfig").lua_ls.setup({}) -- Initialize mason.nvim
-      require("lspconfig").ts_ls.setup({}) -- Initialize mason.nvim
+      require("lspconfig").lua_ls.setup({}) -- for Lua
+      require("lspconfig").ts_ls.setup({}) -- for JS
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
     end
   },
@@ -111,15 +121,20 @@ require("lazy").setup({
             { name = "luasnip" }, -- For luasnip users.
           }, {
             { name = "buffer" },
+          },{
+            { name = "cmp_html" },
           }),
         })
       end,
     },
   },
+  {
+  "mfussenegger/nvim-jdtls"
+  },
 })
 
 require("nvim-treesitter.configs").setup({
-  ensure_installed = {"lua", "javascript"},
+  ensure_installed = {"lua", "javascript", "java"},
   highlight =  { enable = true},
   indent = { enable = true},
 })
@@ -133,5 +148,14 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
+vim.api.nvim_create_user_command("TermHere", function()
+  local dir = vim.fn.expand("%:p:h")
+  vim.cmd("term")
+  vim.fn.chansend(vim.b.terminal_job_id, "cd " .. dir .. "\n")
+end, {})
+
+
 require("config.options")
+
+
 

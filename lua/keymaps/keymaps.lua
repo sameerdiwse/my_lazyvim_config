@@ -18,7 +18,6 @@ function M.setup()
 
   vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { noremap = true, silent = true })
 
-
   vim.keymap.set('n', '<leader>sv', ':vsplit<CR>', { noremap = true, silent = true })
 
   vim.keymap.set('n', '<leader>sh', ':split<CR>', { noremap = true, silent = true })
