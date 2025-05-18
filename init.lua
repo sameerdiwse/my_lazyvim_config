@@ -1,5 +1,8 @@
 -- Install lazy.lua
 vim.g.mapleader = " "
+vim.opt.backup = false
+vim.opt.writebackup = false
+
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.lua"
 if not vim.loop.fs_stat(lazypath) then
@@ -22,7 +25,6 @@ require("keymaps.keymaps").setup()
 -- Setup plugins
 require("lazy").setup({
   { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
-  { "neovim/nvim-lspconfig" },
   { 
     "nvim-neo-tree/neo-tree.nvim", 
     branch = "v3.x",
@@ -70,13 +72,13 @@ require("lazy").setup({
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = {"lua_ls", "ts_ls", "jdtls"}
+        ensure_installed = {"lua_ls", "ts_ls"}
       }) -- Initialize mason.nvim
     end
   },
   {
     "neovim/nvim-lspconfig",
-    config = function()
+      config = function()
       require("lspconfig").lua_ls.setup({}) -- for Lua
       require("lspconfig").ts_ls.setup({}) -- for JS
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
@@ -131,6 +133,21 @@ require("lazy").setup({
   {
   "mfussenegger/nvim-jdtls"
   },
+  {
+  "folke/noice.nvim",
+  event = "VeryLazy",
+  opts = {
+    -- add any options here
+  },
+  dependencies = {
+    -- if you lazy-load any plugin below, make sure to add proper module="..." entries
+    "MunifTanjim/nui.nvim",
+    -- OPTIONAL:
+    --   nvim-notify is only needed, if you want to use the notification view.
+    --   If not available, we use mini as the fallback
+    "rcarriga/nvim-notify",
+    }
+},
 })
 
 require("nvim-treesitter.configs").setup({
@@ -144,9 +161,26 @@ require("catppuccin").setup()
 vim.cmd.colorscheme "catppuccin"
 vim.api.nvim_create_autocmd("BufWritePre", {
   callback = function()
-    vim.lsp.buf.format({ async = false })
+    vim.lsp.buf.format({ async = true })
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "java",
+  callback = function()
+    vim.b.autoformat = false
+
+    local jdtls = require("jdtls")
+    local home = os.getenv("HOME")
+    local workspace_dir = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+    local config = {
+      cmd = { "jdtls", "-data", workspace_dir },
+      root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew" }),
+    }
+    jdtls.start_or_attach(config)
+  end,
+})
+
 
 vim.api.nvim_create_user_command("TermHere", function()
   local dir = vim.fn.expand("%:p:h")
@@ -156,6 +190,5 @@ end, {})
 
 
 require("config.options")
-
 
 

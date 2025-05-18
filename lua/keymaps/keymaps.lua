@@ -13,6 +13,17 @@ function M.setup()
   -- Refresh Neo-tree
   vim.keymap.set('n', '<leader>r', ':Neotree refresh<CR>', { noremap = true, silent = true })
 
+  -- Dismiss Noice Message
+  vim.keymap.set("n", "<leader>nd", "<cmd>NoiceDismiss<CR>", { desc = "Dismiss Noice Message" })
+
+  vim.keymap.set("n", "<leader>r", function()
+  local file = vim.fn.expand("%:t")           -- e.g., HelloWorld.java
+  local filename = vim.fn.expand("%:r")       -- e.g., HelloWorld
+  vim.cmd("w")                                 -- Save the current file
+  vim.cmd("!javac " .. file)                   -- Compile
+  vim.cmd("!java " .. filename)                -- Run
+end, { desc = "Compile and run Java file" })
+
   -- Toggle hidden files (dotfiles)
   vim.keymap.set('n', '<leader>h', ':Neotree toggle_hidden<CR>', { noremap = true, silent = true })
 
