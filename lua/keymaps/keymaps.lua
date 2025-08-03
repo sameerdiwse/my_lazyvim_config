@@ -13,6 +13,9 @@ function M.setup()
   -- Refresh Neo-tree
   vim.keymap.set('n', '<leader>r', ':Neotree refresh<CR>', { noremap = true, silent = true })
 
+  -- Get into normal mode
+  vim.keymap.set("i", "jj", "<Esc>", { noremap = true, silent = true })
+
   -- Dismiss Noice Message
   vim.keymap.set("n", "<leader>nd", "<cmd>NoiceDismiss<CR>", { desc = "Dismiss Noice Message" })
 
@@ -42,6 +45,10 @@ end, { desc = "Compile and run Java file" })
   vim.keymap.set('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })  -- Close current window
 
   vim.keymap.set('n', '<leader>ss', ':w<CR>', { noremap = true, silent = true })  -- Close current window
+
+  --for opening the terminal and running the command for kicking off the spring boot app
+  vim.keymap.set("n", "<leader>sb", ":terminal mvnw spring-boot:run<CR>")
+
 
   --vim.keymap.set('n', '<leader>f', 'f', { noremap = true })
 

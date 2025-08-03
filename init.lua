@@ -171,7 +171,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.b.autoformat = false
 
     local jdtls = require("jdtls")
-    local home = os.getenv("HOME")
+    local home = os.getenv("HOME") or os.getenv("USERPROFILE")
     local workspace_dir = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
     local config = {
       cmd = { "jdtls", "-data", workspace_dir },
@@ -181,12 +181,19 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-
-vim.api.nvim_create_user_command("TermHere", function()
+vim.keymap.set("n", "<leader>rj", function()
   local dir = vim.fn.expand("%:p:h")
-  vim.cmd("term")
-  vim.fn.chansend(vim.b.terminal_job_id, "cd " .. dir .. "\n")
-end, {})
+  local filename = vim.fn.expand("%:t")
+  local classname = vim.fn.expand("%:t:r")
+
+  vim.cmd("w")  -- Save the file
+  -- Open a terminal in a bottom split and run the command directly
+  local cmd = string.format("cd %s && javac %s && java %s", dir, filename, classname)
+  vim.cmd(string.format("botright split | term %s", cmd))
+
+  -- Optionally, enter terminal mode automatically
+  vim.cmd("startinsert")
+end, { desc = "Compile and run Java" })
 
 
 require("config.options")
